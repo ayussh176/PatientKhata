@@ -6,7 +6,11 @@ import {
   signOut,
   onAuthStateChanged,
 } from "@/lib/firebase";
-import { User } from "firebase/auth";
+import {
+  User,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
 
 type AuthContextType = {
   currentUser: User | null;
@@ -43,6 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const login = async (email: string, password: string) => {
+    await setPersistence(auth, browserLocalPersistence);
     await signInWithEmailAndPassword(auth, email, password);
   };
 
