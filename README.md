@@ -1,9 +1,4 @@
 
-And here’s the **final `README.md`** with everything integrated:
-
----
-
-```markdown
 # 🩺 PatientKhata
 
 **PatientKhata** is a web-based patient record management system where doctors can **add**, **view**, and **search** patient details using a unique Patient ID. Designed for clinics and hospitals, it simplifies patient record keeping and retrieval.
@@ -40,10 +35,6 @@ And here’s the **final `README.md`** with everything integrated:
 
 ### 🔍 Search Patient
 ![Search Patient](./screenshot/Screenshot%202025-06-27%20130924.png)
-
-> _Make sure to store screenshots inside a `/screenshots` folder in your repo for these to show correctly._
-
----
 
 ## 📁 Folder Structure
 
