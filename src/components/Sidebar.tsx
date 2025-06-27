@@ -78,3 +78,4 @@ const Sidebar: React.FC<SidebarProps> = ({ doctorData, onLogout }) => {
 };
 
 export default Sidebar;
+// This code defines a Sidebar component for a doctor's dashboard, displaying doctor information and navigation links.
