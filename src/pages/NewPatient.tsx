@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
-import { Save, User, Activity, FileText, ChevronLeft, AlertCircle } from "lucide-react";
+import { Save, User, Activity, ChevronLeft, Stethoscope, Thermometer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,8 +17,14 @@ const NewPatient = () => {
   const [formData, setFormData] = useState({
     name: "",
     age: "",
+    gender: "Male",
+    phone: "",
     bloodPressure: "",
-    disease: "",
+    temperature: "",
+    pulse: "",
+    complaint: "",
+    history: "",
+    diagnosis: "",
     prescription: ""
   });
 
@@ -46,11 +52,6 @@ const NewPatient = () => {
     fetchDoctorData();
   }, [currentUser]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -60,178 +61,222 @@ const NewPatient = () => {
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.age) {
-      toast({ title: "Validation Error", description: "Patient name and age are required.", variant: "destructive" });
-      return;
-    }
     if (!currentUser) return;
 
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const patientsCollection = collection(db, "patients");
-      const docRef = await addDoc(patientsCollection, {
+      await addDoc(collection(db, "users", currentUser.uid, "patients"), {
         ...formData,
+        date: new Date().toISOString(),
         doctorId: currentUser.uid,
-        createdAt: new Date().toISOString(),
-        lastVisitDate: new Date().toISOString(),
+        status: "Admitted"
       });
+
       toast({
-        title: "Success",
-        description: "Patient record created successfully.",
-        className: "bg-emerald-50 border-emerald-200 text-emerald-800",
+        title: "Patient Admitted",
+        description: `Record created for ${formData.name}. Token generated.`,
+        className: "bg-emerald-50 border-emerald-200 text-emerald-900"
       });
-      navigate(`/search-patient?patientId=${docRef.id}`);
+      navigate("/dashboard");
     } catch (error) {
-      toast({ title: "Error", description: "Failed to save record.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: "Failed to create patient record.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex h-screen bg-neutral-50 text-neutral-900 font-sans">
+    <div className="flex h-screen bg-background font-sans text-sm">
       <Sidebar doctorData={doctorData} onLogout={handleLogout} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-neutral-200 h-16 flex items-center justify-between px-8 sticky top-0 z-10">
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-neutral-400 hover:text-neutral-900">
-              <ChevronLeft className="h-5 w-5" />
+        <header className="h-14 bg-white border-b border-border flex items-center justify-between px-6 shadow-sm z-10">
+          <div className="flex items-center space-x-2">
+            <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="h-8 w-8 text-slate-500">
+              <ChevronLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-lg font-semibold text-neutral-800">New Patient Registration</h1>
-          </div>
-          <div className="flex items-center space-x-3">
-            <Button variant="outline" onClick={() => navigate(-1)} className="text-neutral-600 border-neutral-300">
-              Cancel
-            </Button>
-            <Button onClick={handleSubmit} disabled={isLoading} className="bg-brand-600 hover:bg-brand-700 text-white min-w-[140px]">
-              {isLoading ? "Saving..." : "Save Record"}
-            </Button>
+            <h1 className="text-lg font-bold text-slate-800 uppercase tracking-tight">New Patient Admission</h1>
           </div>
         </header>
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-3xl mx-auto">
-            <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Main Form Content */}
+        <main className="flex-1 overflow-y-auto p-6 bg-slate-50/50">
+          <form onSubmit={handleSubmit} className="max-w-5xl mx-auto space-y-6">
 
-              {/* Personal Information */}
-              <section className="card-base p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="p-2 bg-brand-50 rounded-lg text-brand-600 mt-1">
-                    <User className="h-5 w-5" />
-                  </div>
-                  <div className="flex-1 space-y-6">
-                    <div>
-                      <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-500 mb-1">Personal Details</h2>
-                      <p className="text-sm text-neutral-400">Basic patient identification information.</p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-1.5">
-                        <label htmlFor="name" className="label-text">Full Name <span className="text-red-500">*</span></label>
-                        <input
-                          id="name"
-                          name="name"
-                          className="input-field"
-                          placeholder="e.g. John Doe"
-                          value={formData.name}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label htmlFor="age" className="label-text">Age <span className="text-red-500">*</span></label>
-                        <div className="relative">
-                          <input
-                            id="age"
-                            name="age"
-                            type="number"
-                            className="input-field pr-12"
-                            placeholder="0"
-                            value={formData.age}
-                            onChange={handleChange}
-                          />
-                          <span className="absolute right-3 top-2.5 text-sm text-neutral-400 pointer-events-none">Yrs</span>
-                        </div>
-                      </div>
-                    </div>
+            {/* Section 1: Demographics */}
+            <div className="card-clinical p-0 overflow-hidden">
+              <div className="bg-slate-100 px-4 py-2 border-b border-border">
+                <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center">
+                  <User className="h-3 w-3 mr-2" /> Demographics & Identity
+                </h3>
+              </div>
+              <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="col-span-2">
+                  <label className="label-clinical">Full Name <span className="text-red-500">*</span></label>
+                  <input
+                    required
+                    name="name"
+                    placeholder="Enter patient name"
+                    className="input-clinical uppercase"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label className="label-clinical">Age <span className="text-red-500">*</span></label>
+                  <input
+                    required
+                    name="age"
+                    type="number"
+                    placeholder="Years"
+                    className="input-clinical"
+                    value={formData.age}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label className="label-clinical">Gender</label>
+                  <select
+                    name="gender"
+                    className="input-clinical h-9" // match height
+                    value={formData.gender}
+                    onChange={handleChange}
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div className="col-span-2">
+                  <label className="label-clinical">Contact Number</label>
+                  <input
+                    name="phone"
+                    placeholder="+91 XXXXX XXXXX"
+                    className="input-clinical font-mono"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 2: Vitals & Triage */}
+            <div className="card-clinical p-0 overflow-hidden">
+              <div className="bg-blue-50/50 px-4 py-2 border-b border-border">
+                <h3 className="text-xs font-bold text-blue-700 uppercase tracking-wider flex items-center">
+                  <Activity className="h-3 w-3 mr-2" /> Vitals & Triage Data
+                </h3>
+              </div>
+              <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="label-clinical">Blood Pressure</label>
+                  <div className="relative">
+                    <Activity className="absolute left-2 top-2 h-4 w-4 text-slate-400" />
+                    <input
+                      name="bloodPressure"
+                      placeholder="120/80"
+                      className="input-clinical pl-8"
+                      value={formData.bloodPressure}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
-              </section>
-
-              {/* Medical Details */}
-              <section className="card-base p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="p-2 bg-rose-50 rounded-lg text-rose-600 mt-1">
-                    <Activity className="h-5 w-5" />
-                  </div>
-                  <div className="flex-1 space-y-6">
-                    <div>
-                      <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-500 mb-1">Clinical Vitals</h2>
-                      <p className="text-sm text-neutral-400">Current health metrics and diagnosis.</p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-1.5">
-                        <label htmlFor="bloodPressure" className="label-text">Blood Pressure</label>
-                        <input
-                          id="bloodPressure"
-                          name="bloodPressure"
-                          className="input-field"
-                          placeholder="e.g. 120/80"
-                          value={formData.bloodPressure}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label htmlFor="disease" className="label-text">Diagnosis / Conditions</label>
-                        <input
-                          id="disease"
-                          name="disease"
-                          className="input-field"
-                          placeholder="e.g. Type 2 Diabetes"
-                          value={formData.disease}
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
+                <div>
+                  <label className="label-clinical">Body Temp (°F)</label>
+                  <div className="relative">
+                    <Thermometer className="absolute left-2 top-2 h-4 w-4 text-slate-400" />
+                    <input
+                      name="temperature"
+                      placeholder="98.6"
+                      className="input-clinical pl-8"
+                      value={formData.temperature}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
-              </section>
-
-              {/* Prescription */}
-              <section className="card-base p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600 mt-1">
-                    <FileText className="h-5 w-5" />
-                  </div>
-                  <div className="flex-1 space-y-6">
-                    <div>
-                      <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-500 mb-1">Prescription & Notes</h2>
-                      <p className="text-sm text-neutral-400">Treatment plan and clinical observations.</p>
-                    </div>
-                    <div className="space-y-1.5">
-                      <textarea
-                        id="prescription"
-                        name="prescription"
-                        rows={6}
-                        className="input-field text-base leading-relaxed"
-                        placeholder="Type prescription details here..."
-                        value={formData.prescription}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="flex items-center space-x-2 text-sm text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-100">
-                      <AlertCircle className="h-4 w-4" />
-                      <span>Remember to verify patient allergies before prescribing.</span>
-                    </div>
+                <div>
+                  <label className="label-clinical">Pulse (BPM)</label>
+                  <div className="relative">
+                    <Activity className="absolute left-2 top-2 h-4 w-4 text-slate-400" />
+                    <input
+                      name="pulse"
+                      placeholder="72"
+                      className="input-clinical pl-8"
+                      value={formData.pulse}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
-              </section>
+              </div>
+            </div>
 
-            </form>
-          </div>
+            {/* Section 3: Clinical Notes */}
+            <div className="card-clinical p-0 overflow-hidden">
+              <div className="bg-slate-100 px-4 py-2 border-b border-border">
+                <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center">
+                  <Stethoscope className="h-3 w-3 mr-2" /> Clinical Assessment
+                </h3>
+              </div>
+              <div className="p-4 space-y-4">
+                <div>
+                  <label className="label-clinical">Chief Complaint</label>
+                  <textarea
+                    name="complaint"
+                    rows={2}
+                    className="input-clinical"
+                    placeholder="Primary reason for visit..."
+                    value={formData.complaint}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="label-clinical">History of Present Illness</label>
+                    <textarea
+                      name="history"
+                      rows={4}
+                      className="input-clinical"
+                      placeholder="Detailed history..."
+                      value={formData.history}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="label-clinical">Prescription / Plan</label>
+                    <textarea
+                      name="prescription"
+                      rows={4}
+                      className="input-clinical font-mono bg-yellow-50/30"
+                      placeholder="Rx..."
+                      value={formData.prescription}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Bar */}
+            <div className="flex items-center justify-end space-x-4 pt-4 border-t border-slate-200">
+              <Button type="button" variant="outline" onClick={() => navigate("/dashboard")} className="border-slate-300 text-slate-700">
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isLoading} className="bg-teal-700 hover:bg-teal-800 text-white min-w-[150px] shadow-sm">
+                {isLoading ? "Processing..." : "Admit Patient"} <Save className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </form>
         </main>
       </div>
     </div>

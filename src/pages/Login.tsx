@@ -43,29 +43,29 @@ const Login = () => {
   return (
     <div className="min-h-screen flex bg-white font-sans">
       {/* Left Side - Brand/Hero */}
-      <div className="hidden lg:flex lg:w-1/2 bg-neutral-900 text-white p-12 flex-col justify-between relative overflow-hidden">
-        <div className="absolute inset-0 bg-brand-900/20 z-0"></div>
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-brand-500 rounded-full blur-3xl opacity-20"></div>
+      <div className="hidden lg:flex lg:w-1/2 bg-slate-900 text-white p-12 flex-col justify-between relative overflow-hidden">
+        <div className="absolute inset-0 bg-teal-900/20 z-0"></div>
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-teal-500 rounded-full blur-3xl opacity-20"></div>
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-emerald-500 rounded-full blur-3xl opacity-20"></div>
 
         <div className="relative z-10">
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
-              <span className="font-bold text-xl">P</span>
+            <div className="h-10 w-10 bg-teal-600 rounded-sm flex items-center justify-center shadow-lg shadow-teal-500/20">
+              <span className="font-bold text-xl text-white">+</span>
             </div>
-            <span className="text-xl font-bold tracking-tight">PatientKhata</span>
+            <span className="text-xl font-bold tracking-tight">CURE:SYS</span>
           </div>
         </div>
 
         <div className="relative z-10 max-w-md">
-          <h2 className="text-4xl font-bold mb-6 leading-tight">Manage your practice with confidence.</h2>
-          <p className="text-neutral-400 text-lg leading-relaxed">
-            Join thousands of healthcare professionals who trust PatientKhata for secure, efficient patient management.
+          <h2 className="text-4xl font-bold mb-6 leading-tight">Advanced Clinical EMR for Modern Hospitals.</h2>
+          <p className="text-slate-400 text-lg leading-relaxed">
+            Secure patient records, OPD management, and real-time vitals tracking.
           </p>
         </div>
 
-        <div className="relative z-10 text-sm text-neutral-500">
-          © 2024 PatientKhata Inc. All rights reserved.
+        <div className="relative z-10 text-sm text-slate-500">
+          © 2024 CURE:SYS Hospital Networks.
         </div>
       </div>
 
@@ -76,28 +76,28 @@ const Login = () => {
           className="absolute top-8 left-8 lg:hidden"
           onClick={() => navigate("/")}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
 
         <div className="w-full max-w-sm mx-auto space-y-8">
           <div className="text-center lg:text-left">
-            <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">Welcome back</h1>
-            <p className="mt-2 text-neutral-500">Sign in to your account to continue</p>
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Staff Login</h1>
+            <p className="mt-2 text-slate-500">Access your clinical dashboard</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-neutral-700" htmlFor="email">Email</label>
+                <label className="text-sm font-bold text-slate-700 uppercase tracking-wide" htmlFor="email">Email ID</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-2.5 h-5 w-5 text-neutral-400" />
+                  <Mail className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
                   <input
                     id="email"
                     name="email"
                     type="email"
                     required
-                    className="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all"
-                    placeholder="doctor@example.com"
+                    className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-sm focus:ring-1 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
+                    placeholder="doctor@hospital.com"
                     value={formData.email}
                     onChange={handleChange}
                   />
@@ -105,17 +105,17 @@ const Login = () => {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-neutral-700" htmlFor="password">Password</label>
-                  <Link to="#" className="text-sm font-medium text-brand-600 hover:text-brand-700">Forgot password?</Link>
+                  <label className="text-sm font-bold text-slate-700 uppercase tracking-wide" htmlFor="password">Password</label>
+                  <Link to="#" className="text-xs font-medium text-teal-600 hover:text-teal-700">Forgot password?</Link>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-2.5 h-5 w-5 text-neutral-400" />
+                  <Lock className="absolute left-3 top-2.5 h-5 w-5 text-slate-400" />
                   <input
                     id="password"
                     name="password"
                     type="password"
                     required
-                    className="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-sm focus:ring-1 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all"
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
@@ -127,20 +127,20 @@ const Login = () => {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white h-11 text-base shadow-lg shadow-brand-500/20"
+              className="w-full bg-teal-700 hover:bg-teal-800 text-white h-11 text-base shadow-sm rounded-sm"
             >
               {isLoading ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...</>
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Authenticating...</>
               ) : (
-                "Sign in"
+                "Access System"
               )}
             </Button>
           </form>
 
           <div className="text-center text-sm">
-            <span className="text-neutral-500">Don't have an account? </span>
-            <Link to="/signup" className="font-semibold text-brand-600 hover:text-brand-700 transition-colors">
-              Create an account
+            <span className="text-slate-500">New personnel? </span>
+            <Link to="/signup" className="font-semibold text-teal-700 hover:text-teal-800 transition-colors">
+              Register ID
             </Link>
           </div>
         </div>

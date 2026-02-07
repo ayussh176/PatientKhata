@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Sidebar from "@/components/Sidebar";
-import { Bell, Calendar, Activity, Users, Plus, Search, ChevronRight, Clock } from "lucide-react";
+import { Activity, Users, Clock, AlertCircle, FileText, Filter, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -14,14 +14,18 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Mock Data for Hospital UI
+  const opdQueue = [
+    { token: "A-102", name: "Rajesh Kumar", age: 45, gender: "M", status: "Vitals Pending", priority: "urgent", time: "10:00 AM" },
+    { token: "A-103", name: "Sunita Devi", age: 32, gender: "F", status: "Waiting", priority: "normal", time: "10:15 AM" },
+    { token: "A-104", name: "Vikram Singh", age: 28, gender: "M", status: "In Consultation", priority: "normal", time: "10:30 AM" },
+    { token: "A-105", name: "Anita Roy", age: 65, gender: "F", status: "Waiting", priority: "high", time: "10:45 AM" },
+  ];
+
   const [doctorData, setDoctorData] = useState({
     name: "Loading...",
     specialization: "Loading...",
     department: "Loading...",
-    doctorId: "Loading...",
-    appointments: 0,
-    surgeries: 0,
-    meetings: 0
   });
 
   useEffect(() => {
@@ -51,129 +55,175 @@ const Dashboard = () => {
     }
   };
 
-  const stats = [
-    { label: "Daily Appointments", value: doctorData.appointments || 12, change: "+4.5%", icon: Calendar, color: "text-brand-600", bg: "bg-brand-50" },
-    { label: "Total Patients", value: "1,248", change: "+12%", icon: Users, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Surgeries", value: doctorData.surgeries || 3, change: "0%", icon: Activity, color: "text-rose-600", bg: "bg-rose-50" },
-    { label: "Pending Reports", value: "8", change: "-2%", icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-  ];
-
-  const upcomingSchedule = [
-    { time: "09:00 AM", patient: "Sarah Johnson", type: "Check-up", status: "Checked In" },
-    { time: "10:30 AM", patient: "Michael Chen", type: "Consultation", status: "Waiting" },
-    { time: "11:45 AM", patient: "Emma Davis", type: "Follow-up", status: "Confirmed" },
-    { time: "02:15 PM", patient: "James Wilson", type: "Report Review", status: "Pending" },
-  ];
-
   return (
-    <div className="flex h-screen bg-neutral-50 text-neutral-900 font-sans">
+    <div className="flex h-screen bg-background font-sans text-sm">
       <Sidebar doctorData={doctorData} onLogout={handleLogout} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-white border-b border-neutral-200 h-16 flex items-center justify-between px-8 sticky top-0 z-10">
-          <h1 className="text-xl font-semibold text-neutral-800">Overview</h1>
+        {/* Hospital Header - Minimal & Functional */}
+        <header className="h-14 bg-white border-b border-border flex items-center justify-between px-6 shadow-sm z-10">
+          <div className="flex items-center space-x-4">
+            <h1 className="text-lg font-bold text-slate-800 uppercase tracking-tight">OPD Control Center</h1>
+            <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-xs font-mono text-slate-600 rounded-sm">
+              DEPT: {doctorData.department || "GENERAL"}
+            </span>
+          </div>
 
-          <div className="flex items-center space-x-6">
-            <div className="relative">
-              <Bell className="h-5 w-5 text-neutral-400 hover:text-neutral-600 cursor-pointer transition-colors" />
-              <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+          <div className="flex items-center space-x-4 text-xs font-medium text-slate-500">
+            <div className="flex items-center space-x-2">
+              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
+              <span>SYSTEM ONLINE</span>
             </div>
-            <div className="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-medium text-sm border border-brand-200">
-              {doctorData.name.charAt(0)}
+            <div className="pl-4 border-l border-slate-200">
+              {new Date().toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}
             </div>
           </div>
         </header>
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-7xl mx-auto space-y-8">
+        {/* Main Content - Dense Layout */}
+        <main className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <div key={index} className="card-base p-5 flex items-start justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">{stat.label}</p>
-                    <h3 className="text-2xl font-bold text-neutral-900 mt-1">{stat.value}</h3>
-                    <span className={cn("text-xs font-medium mt-2 inline-block", stat.change.startsWith("+") ? "text-emerald-600" : "text-neutral-500")}>
-                      {stat.change} <span className="text-neutral-400 font-normal">from last week</span>
-                    </span>
-                  </div>
-                  <div className={cn("p-2.5 rounded-lg", stat.bg)}>
-                    <stat.icon className={cn("h-5 w-5", stat.color)} />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-              {/* Left Column: Schedule & Activity */}
-              <div className="lg:col-span-2 space-y-8">
-                <div className="card-base p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-semibold text-neutral-900">Today's Schedule</h3>
-                    <Button variant="ghost" size="sm" className="text-brand-600 hover:text-brand-700 hover:bg-brand-50 text-xs font-medium h-8">
-                      View Calendar
-                    </Button>
-                  </div>
-                  <div className="space-y-4">
-                    {upcomingSchedule.map((app, i) => (
-                      <div key={i} className="flex items-center p-3 hover:bg-neutral-50 rounded-lg transition-colors border border-transparent hover:border-neutral-100 group">
-                        <div className="w-20 text-sm font-medium text-neutral-500">{app.time}</div>
-                        <div className="flex-1 ml-4">
-                          <div className="text-sm font-medium text-neutral-900">{app.patient}</div>
-                          <div className="text-xs text-neutral-500">{app.type}</div>
-                        </div>
-                        <div>
-                          <span className={cn(
-                            "text-xs px-2.5 py-1 rounded-full font-medium border",
-                            app.status === "Checked In" ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
-                              app.status === "Waiting" ? "bg-amber-50 text-amber-700 border-amber-100" :
-                                "bg-neutral-50 text-neutral-600 border-neutral-100"
-                          )}>
-                            {app.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          {/* Status Ticker / Top Bar */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="card-clinical p-3 flex flex-col justify-between border-l-4 border-l-emerald-500">
+              <span className="label-clinical text-slate-500">OPD Active</span>
+              <div className="flex justify-between items-end">
+                <span className="text-2xl font-bold text-slate-800 leading-none">42</span>
+                <Users className="h-4 w-4 text-emerald-600 mb-1" />
               </div>
+            </div>
+            <div className="card-clinical p-3 flex flex-col justify-between border-l-4 border-l-amber-500">
+              <span className="label-clinical text-slate-500">Waiting</span>
+              <div className="flex justify-between items-end">
+                <span className="text-2xl font-bold text-slate-800 leading-none">12</span>
+                <Clock className="h-4 w-4 text-amber-600 mb-1" />
+              </div>
+            </div>
+            <div className="card-clinical p-3 flex flex-col justify-between border-l-4 border-l-red-500">
+              <span className="label-clinical text-slate-500">Critical / ER</span>
+              <div className="flex justify-between items-end">
+                <span className="text-2xl font-bold text-slate-800 leading-none">03</span>
+                <AlertCircle className="h-4 w-4 text-red-600 mb-1" />
+              </div>
+            </div>
+            <div className="card-clinical p-3 flex flex-col justify-between border-l-4 border-l-blue-500">
+              <span className="label-clinical text-slate-500">Avg. Wait</span>
+              <div className="flex justify-between items-end">
+                <span className="text-2xl font-bold text-slate-800 leading-none">18m</span>
+                <Activity className="h-4 w-4 text-blue-600 mb-1" />
+              </div>
+            </div>
+          </div>
 
-              {/* Right Column: Quick Actions */}
-              <div className="space-y-6">
-                <div className="card-base p-6">
-                  <h3 className="text-lg font-semibold text-neutral-900 mb-4">Quick Actions</h3>
-                  <div className="space-y-3">
-                    <Button
-                      onClick={() => navigate("/new-patient")}
-                      className="w-full justify-start h-12 bg-neutral-900 hover:bg-neutral-800 text-white"
-                    >
-                      <Plus className="mr-2 h-4 w-4" /> New Patient Registration
-                    </Button>
-                    <Button
-                      onClick={() => navigate("/search-patient")}
-                      variant="outline"
-                      className="w-full justify-start h-12 border-neutral-200 hover:bg-neutral-50 text-neutral-700"
-                    >
-                      <Search className="mr-2 h-4 w-4" /> Search Patient Records
-                    </Button>
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[calc(100vh-12rem)]">
 
-                <div className="bg-gradient-to-br from-brand-600 to-brand-700 rounded-2xl p-6 text-white shadow-lg shadow-brand-500/20">
-                  <h4 className="font-semibold text-lg mb-2">Pro Tip</h4>
-                  <p className="text-brand-100 text-sm mb-4">You can now search for patients using their phone number directly from the search bar.</p>
-                  <Button size="sm" variant="secondary" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
-                    Learn More
+            {/* LEFT: Patient Queue (Main Focus) */}
+            <div className="lg:col-span-2 card-clinical flex flex-col overflow-hidden">
+              <div className="px-4 py-3 border-b border-border bg-slate-50 flex justify-between items-center">
+                <h3 className="font-bold text-slate-700 uppercase tracking-tight text-xs flex items-center">
+                  <Users className="h-3 w-3 mr-2" /> Current Queue
+                </h3>
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="sm" className="h-7 text-xs bg-white border-slate-300">
+                    <Filter className="h-3 w-3 mr-1" /> Filter
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-7 text-xs bg-white border-slate-300">
+                    <Printer className="h-3 w-3 mr-1" /> Print List
                   </Button>
                 </div>
               </div>
 
+              <div className="flex-1 overflow-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-slate-100 sticky top-0 z-10">
+                    <tr>
+                      <th className="px-4 py-2 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">Token</th>
+                      <th className="px-4 py-2 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">Time</th>
+                      <th className="px-4 py-2 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">Patient Name</th>
+                      <th className="px-4 py-2 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">Priority</th>
+                      <th className="px-4 py-2 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">Status</th>
+                      <th className="px-4 py-2 text-xs font-bold text-slate-500 uppercase border-b border-slate-200 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {opdQueue.map((patient, idx) => (
+                      <tr key={idx} className="hover:bg-blue-50/50 transition-colors group cursor-pointer">
+                        <td className="px-4 py-3 font-mono text-slate-700 font-medium">{patient.token}</td>
+                        <td className="px-4 py-3 text-slate-500">{patient.time}</td>
+                        <td className="px-4 py-3 font-medium text-slate-900">
+                          {patient.name} <span className="text-slate-400 text-xs font-normal">({patient.gender}/{patient.age})</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={cn(
+                            "px-1.5 py-0.5 rounded text-[10px] font-bold uppercase",
+                            patient.priority === "urgent" ? "bg-red-100 text-red-700" :
+                              patient.priority === "high" ? "bg-amber-100 text-amber-700" :
+                                "bg-slate-100 text-slate-600"
+                          )}>
+                            {patient.priority}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-xs font-medium text-slate-600">{patient.status}</td>
+                        <td className="px-4 py-3 text-right">
+                          <Button size="sm" variant="ghost" className="h-6 text-xs text-blue-600 hover:bg-blue-50 uppercase font-bold tracking-tight">
+                            Chart
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
+
+            {/* RIGHT: Notifications / Tasks */}
+            <div className="space-y-4">
+              {/* Shift Info */}
+              <div className="card-clinical p-4 bg-slate-800 text-white border-slate-700">
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Shift Details</h4>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-700 pb-2">
+                    <span className="text-slate-300">Duty Doctor</span>
+                    <span className="font-mono font-medium">{doctorData.name}</span>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-slate-700 pb-2">
+                    <span className="text-slate-300">Shift Time</span>
+                    <span className="font-mono text-emerald-400">08:00 - 16:00</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-300">Nurse on Duty</span>
+                    <span className="font-mono">Sister Nancy</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recent Reports */}
+              <div className="card-clinical flex-1 flex flex-col">
+                <div className="px-4 py-3 border-b border-border bg-slate-50">
+                  <h3 className="font-bold text-slate-700 uppercase tracking-tight text-xs flex items-center">
+                    <FileText className="h-3 w-3 mr-2" /> Pending Reports
+                  </h3>
+                </div>
+                <ul className="divide-y divide-slate-100">
+                  {[1, 2, 3].map((i) => (
+                    <li key={i} className="px-4 py-3 hover:bg-slate-50 cursor-pointer">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-xs font-bold text-slate-800">Lipid Profile</p>
+                          <p className="text-[10px] text-slate-500">Patient: Rajesh Kumar (A-102)</p>
+                        </div>
+                        <span className="text-[10px] bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded border border-yellow-200 font-medium">PENDING</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <div className="p-2 border-t border-slate-100 mt-auto">
+                  <Button variant="ghost" className="w-full h-8 text-xs font-bold text-slate-500 uppercase tracking-wide">View All Reports</Button>
+                </div>
+              </div>
+
+            </div>
+
           </div>
         </main>
       </div>
