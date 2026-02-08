@@ -124,12 +124,12 @@ const Dashboard = () => {
                   <Users className="h-3 w-3 mr-2" /> Current Queue
                 </h3>
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" className="h-7 text-xs bg-white border-slate-300">
+                  {/* <Button variant="outline" size="sm" className="h-7 text-xs bg-white border-slate-300">
                     <Filter className="h-3 w-3 mr-1" /> Filter
                   </Button>
                   <Button variant="outline" size="sm" className="h-7 text-xs bg-white border-slate-300">
                     <Printer className="h-3 w-3 mr-1" /> Print List
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
 
@@ -165,9 +165,9 @@ const Dashboard = () => {
                         </td>
                         <td className="px-4 py-3 text-xs font-medium text-slate-600">{patient.status}</td>
                         <td className="px-4 py-3 text-right">
-                          <Button size="sm" variant="ghost" className="h-6 text-xs text-blue-600 hover:bg-blue-50 uppercase font-bold tracking-tight">
+                          {/* <Button size="sm" variant="ghost" className="h-6 text-xs text-blue-600 hover:bg-blue-50 uppercase font-bold tracking-tight">
                             Chart
-                          </Button>
+                          </Button> */}
                         </td>
                       </tr>
                     ))}

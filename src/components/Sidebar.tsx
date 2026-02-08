@@ -26,9 +26,9 @@ const Sidebar = ({ doctorData, onLogout }: { doctorData: any; onLogout: () => vo
     { label: "Overview", icon: LayoutDashboard, path: "/dashboard" },
     { label: "New Admission", icon: UserPlus, path: "/new-patient" },
     { label: "Patient Records", icon: Search, path: "/search-patient" },
-    { label: "OPD Queue", icon: Users, path: "/opd-queue" }, // Feature hint
-    { label: "Vitals Monitor", icon: Activity, path: "/vitals" }, // Feature hint
-    { label: "Reports", icon: FileText, path: "/reports" },
+    // { label: "OPD Queue", icon: Users, path: "/opd-queue" }, // Feature hint
+    // { label: "Vitals Monitor", icon: Activity, path: "/vitals" }, // Feature hint
+    // { label: "Reports", icon: FileText, path: "/reports" },
   ];
 
   return (
@@ -64,7 +64,7 @@ const Sidebar = ({ doctorData, onLogout }: { doctorData: any; onLogout: () => vo
             <div className="h-8 w-8 bg-teal-600 rounded-sm flex items-center justify-center">
               <span className="font-bold text-white text-lg">+</span>
             </div>
-            <span className="font-bold text-lg text-slate-100 tracking-tight">CURE<span className="text-teal-500">SYS</span></span>
+            <span className="font-bold text-lg text-slate-100 tracking-tight">Patient<span className="text-teal-500">Khata</span></span>
           </div>
         </div>
 
@@ -104,16 +104,16 @@ const Sidebar = ({ doctorData, onLogout }: { doctorData: any; onLogout: () => vo
             );
           })}
 
-          <div className="mt-8">
+          {/* <div className="mt-8">
             <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">System</p>
             <Link
               to="/settings"
               className="flex items-center space-x-3 px-3 py-2.5 rounded-sm text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors border-l-2 border-transparent"
             >
               <Settings className="h-4 w-4 text-slate-500" />
-              <span>Settings</span>
+              <span>Settigs</span>
             </Link>
-          </div>
+          </div> */}
         </nav>
 
         {/* Footer Actions */}

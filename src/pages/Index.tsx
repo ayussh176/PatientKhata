@@ -15,14 +15,14 @@ const Index = () => {
           </div>
           <span className="text-xl font-bold text-gray-900 tracking-tight">Patient Khata</span>
         </div>
-        <div className="space-x-4">
+        {/* <div className="space-x-4">
           <Button variant="ghost" onClick={() => navigate("/login")} className="hover:bg-blue-50 text-gray-700">
             Login
           </Button>
           <Button onClick={() => navigate("/signup")} className="bg-medical-blue hover:bg-blue-600 text-white rounded-full px-6">
             Get Started
           </Button>
-        </div>
+        </div> */}
       </nav>
 
       {/* Hero Section */}
@@ -32,12 +32,12 @@ const Index = () => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
           </span>
-          <span>Secure & Modern Patient Management</span>
+          {/* <span>Secure & Modern Patient Management</span> */}
         </div>
 
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
           Simplify Your <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-medical-blue to-teal-400">Medical Practice</span>
+          <span className="bg-clip-text bg-gradient-to-r">Medical Practice</span>
         </h1>
 
         <p className="text-xl text-gray-600 mb-10 max-w-2xl animate-in fade-in slide-in-from-bottom-8 duration-900">
@@ -53,7 +53,7 @@ const Index = () => {
           </Button>
         </div>
 
-        {/* Features Grid */}
+        {/* Features Grid
         <div className="grid md:grid-cols-3 gap-8 mt-24 text-left w-full animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
             <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4">
@@ -76,7 +76,7 @@ const Index = () => {
             <h3 className="text-lg font-bold text-gray-900 mb-2">Secure Data</h3>
             <p className="text-gray-500">Your patient data is securely stored and accessible only to you.</p>
           </div>
-        </div>
+        </div> */}
       </main>
 
       {/* Footer */}

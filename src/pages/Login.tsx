@@ -53,19 +53,19 @@ const Login = () => {
             <div className="h-10 w-10 bg-teal-600 rounded-sm flex items-center justify-center shadow-lg shadow-teal-500/20">
               <span className="font-bold text-xl text-white">+</span>
             </div>
-            <span className="text-xl font-bold tracking-tight">CURE:SYS</span>
+            <span className="text-xl font-bold tracking-tight">PatientKhata</span>
           </div>
         </div>
 
         <div className="relative z-10 max-w-md">
-          <h2 className="text-4xl font-bold mb-6 leading-tight">Advanced Clinical EMR for Modern Hospitals.</h2>
+          <h2 className="text-5xl font-bold mb-6 leading-tight">Advanced Clinical EMR for Modern Hospitals.</h2>
           <p className="text-slate-400 text-lg leading-relaxed">
             Secure patient records, OPD management, and real-time vitals tracking.
           </p>
         </div>
 
         <div className="relative z-10 text-sm text-slate-500">
-          © 2024 CURE:SYS Hospital Networks.
+          © 2024 PatientKhata.
         </div>
       </div>
 
